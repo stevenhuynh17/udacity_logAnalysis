@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import psycopg2
 
 
@@ -13,9 +15,6 @@ def display(data, unit):
 
 
 def popular_article():
-    db = psycopg2.connect("dbname='news'")
-    cur = db.cursor()
-
     query = """
             select articles.title, count(*) as views
             from log, articles
@@ -24,19 +23,11 @@ def popular_article():
             order by views
             desc limit 3;
             """
-    cur.execute(query)
-    data = cur.fetchall()
-    cur.close()
-    db.close()
-
     print '>>> MOST POPULAR THREE ARTICLES:'
-    display(data, ' views')
+    display(get_query_results(query), ' views')
 
 
 def popular_author():
-    db = psycopg2.connect("dbname='news'")
-    cur = db.cursor()
-
     query = """
             select name, sum(views) as total
             from authors,
@@ -49,19 +40,11 @@ def popular_author():
             group by name
             order by total desc;
             """
-    cur.execute(query)
-    data = cur.fetchall()
-    cur.close()
-    db.close()
-
     print '>>> MOST POPULAR AUTHOR:'
-    display(data, ' views')
+    display(get_query_results(query), ' views')
 
 
 def request_errors():
-    db = psycopg2.connect("dbname='news'")
-    cur = db.cursor()
-
     query = """
             select *
             from
@@ -69,11 +52,11 @@ def request_errors():
                     cast(cast(fails.fails as float)/cast(total.total as float)
                     * 100 as decimal(10,2)) as percent
                 from
-                    (select substring(cast(time as text) for 10) as date,
+                    (select to_char(time, 'FMMonth FMDD, YYYY') as date,
                         count(*) as total
                     from log
                     group by date) as TOTAL,
-                    (select substring(cast(time as text) for 10) as date,
+                    (select to_char(time, 'FMMonth FMDD, YYYY') as date,
                         count(*) as fails
                     from log
                     where status not like '200 OK'
@@ -81,19 +64,24 @@ def request_errors():
                 where total.date=fails.date) as test
             where percent > 1.0;
             """
-    cur.execute(query)
-    data = cur.fetchall()
-    cur.close()
-    db.close()
-
     print '>>> REQUEST ERROR > 1%:'
-    display(data, '%' + ' errors')
+    display(get_query_results(query), '%' + ' errors')
 
 
-try:
+def get_query_results(query):
+    try:
+        db = psycopg2.connect(database="news")
+        c = db.cursor()
+        c.execute(query)
+        result = c.fetchall()
+        db.close()
+        return result
+    except Exception as e:
+        print(e)
+        exit(1)
+
+
+if __name__ == "__main__":
     popular_article()
     popular_author()
     request_errors()
-except Exception as e:
-    print('FAILURE TO CONNECT\n')
-    print(e)
