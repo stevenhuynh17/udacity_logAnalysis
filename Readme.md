@@ -1,6 +1,9 @@
 —————————————
+
 INTRODUCTION:
+
 —————————————
+
 PROJECT: Logs Analysis Project
 
 DESCRIPTION: Collects and sorts the information specified for the project
@@ -9,7 +12,9 @@ AUTHORS: Steven Huynh
 
 
 ———————————————————————
+
 OPERATING INSTRUCTIONS:
+
 ———————————————————————
 
 Setting up your VM environment:
@@ -27,7 +32,9 @@ Running the program:
 
 
 —————————
+
 CONTENTS:
+
 —————————
 - queries.py
 - output.txt
