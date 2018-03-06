@@ -1,28 +1,3 @@
-—————————————
-
-INTRODUCTION:
-
-—————————————
-
-PROJECT: Logs Analysis Project
-
-DESCRIPTION: Collects and sorts the information specified for the project
-
-AUTHORS: Steven Huynh
-
-
-———————————————————————
-
-OPERATING INSTRUCTIONS:
-
-———————————————————————
-
-Setting up your VM environment:
-
-
-Running the program:
-
-
 # Log Analysis
 Searches up the following queries from the provided database
 
